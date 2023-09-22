@@ -256,7 +256,7 @@ void print_board()
 
     for (int y = 0; y < BOARD_Y_BOUND; y++)
     {
-        for (int i = 0; i < BOARD_X_BOUND * 2 + 1; i++)
+        for (int i = 0; i < BOARD_X_BOUND * 4 + 1; i++)
         {
             printf("-");
         }
@@ -264,15 +264,15 @@ void print_board()
 
         for (int x = 0; x < BOARD_X_BOUND; x++)
         {
-            printf("|"
+            printf("| "
                    "%s"
-                   "%c" COLOR_RESET,
+                   "%c " COLOR_RESET,
                    board[y][x].color, board[y][x].status == EMPTY ? ' ' : '@');
         }
         printf("|\n");
     }
 
-    for (int i = 0; i < BOARD_X_BOUND * 2 + 1; i++)
+    for (int i = 0; i < BOARD_X_BOUND * 4 + 1; i++)
     {
         printf("-");
     }
@@ -284,7 +284,7 @@ void print_piece(Piece piece)
 
     for (unsigned int y = 0; y < piece.y; y++)
     {
-        for (unsigned int i = 0; i < piece.x * 2 + 1; i++)
+        for (unsigned int i = 0; i < piece.x * 4 + 1; i++)
         {
             printf("-");
         }
@@ -292,15 +292,15 @@ void print_piece(Piece piece)
 
         for (unsigned int x = 0; x < piece.x; x++)
         {
-            printf("|"
+            printf("| "
                    "%s"
-                   "%c" COLOR_RESET,
+                   "%c " COLOR_RESET,
                    piece.color, piece.shape[y][x].status == EMPTY ? ' ' : '@');
         }
         printf("|\n");
     }
 
-    for (unsigned int i = 0; i < piece.x * 2 + 1; i++)
+    for (unsigned int i = 0; i < piece.x * 4 + 1; i++)
     {
         printf("-");
     }
