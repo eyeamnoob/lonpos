@@ -7,7 +7,7 @@
 #define COLOR_GREEN COLOR_RGB(0, 255, 0)
 #define COLOR_YELLOW COLOR_RGB(255, 255, 0)
 #define COLOR_ORANGE COLOR_RGB(255, 100, 0)
-#define COLOR_BLUE "\e[0;34m"
+#define COLOR_BLUE COLOR_RGB(0, 0, 255)
 #define COLOR_PURPLE "\e[0;35m"
 #define COLOR_CYAN "\e[0;36m"
 #define COLOR_PINK COLOR_RGB(255, 0, 255)

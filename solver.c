@@ -113,6 +113,56 @@ Piece init_l_shape(int direction, unsigned int width, unsigned int height, char 
     return l_shape;
 }
 
+Piece init_b_shape(int direction)
+{
+    Piece l_shape;
+
+    l_shape.x = (direction == UP || direction == DOWN) ? 2 : 3;
+    l_shape.y = (direction == UP || direction == DOWN) ? 3 : 2;
+
+    l_shape.shape = (Cell **)malloc(l_shape.x * l_shape.y * sizeof((Piece){}.shape[0]));
+    for (size_t i = 0; i < l_shape.y; i++)
+    {
+        l_shape.shape[i] = (Cell *)malloc(l_shape.x * sizeof((Piece){}.shape[0][0]));
+    }
+
+    for (size_t i = 0; i < l_shape.y; i++)
+    {
+        for (size_t j = 0; j < l_shape.x; j++)
+        {
+            l_shape.shape[i][j].status = FILL;
+        }
+    }
+    if (direction == UP)
+    {
+
+        l_shape.shape[0][0].status = EMPTY;
+    }
+    else if (direction == DOWN)
+    {
+        l_shape.shape[2][2].status = EMPTY;
+    }
+    else if (direction == LEFT)
+    {
+        l_shape.shape[1][0].status = EMPTY;
+    }
+    else if (direction == RIGHT)
+    {
+        l_shape.shape[0][2].status = EMPTY;
+    }
+    else
+    {
+        fprintf(stderr, "Unknown direction: %d\n", direction);
+        exit(1);
+    }
+
+    l_shape.direction = direction;
+
+    l_shape.color = COLOR_BLUE;
+
+    return l_shape;
+}
+
 Piece init___shape(int direction)
 {
     Piece l_shape;
@@ -293,6 +343,7 @@ int main()
     Piece L_shape = init_l_shape(LEFT, 3, 3, COLOR_ORANGE);
     Piece plus_shape = init_plus_shape();
     Piece __shape = init___shape(RIGHT);
+    Piece b_shape = init_b_shape(RIGHT);
 
     put_piece(l2_shape, 6, 3);
     put_piece(l3_shape, 0, 1);
@@ -300,6 +351,7 @@ int main()
     put_piece(L_shape, 2, 0);
     put_piece(plus_shape, 2, 2);
     put_piece(__shape, 5, 0);
+    put_piece(b_shape, 0, 3);
 
     print_board();
 
@@ -315,6 +367,8 @@ int main()
     print_piece(l2_shape);
     printf("\n");
     print_piece(L_shape);
+    printf("\n");
+    print_piece(b_shape);
 
     return 0;
 }
