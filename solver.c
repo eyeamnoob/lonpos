@@ -40,12 +40,12 @@ typedef struct
     char *color;
 } Piece;
 
-Piece init_l_shape()
+Piece init_l_shape(int direction)
 {
     Piece l_shape;
 
-    l_shape.x = 2;
-    l_shape.y = 3;
+    l_shape.x = (direction == UP || direction == DOWN) ? 2 : 3;
+    l_shape.y = (direction == UP || direction == DOWN) ? 3 : 2;
 
     l_shape.shape = (Cell **)malloc(l_shape.x * l_shape.y * sizeof((Piece){}.shape[0]));
     for (size_t i = 0; i < l_shape.y; i++)
@@ -60,10 +60,33 @@ Piece init_l_shape()
             l_shape.shape[i][j].status = FULL;
         }
     }
-    l_shape.shape[0][0].status = EMPTY;
-    l_shape.shape[1][0].status = EMPTY;
+    if (direction == UP)
+    {
+        l_shape.shape[0][0].status = EMPTY;
+        l_shape.shape[1][0].status = EMPTY;
+    }
+    else if (direction == DOWN)
+    {
+        l_shape.shape[1][1].status = EMPTY;
+        l_shape.shape[2][1].status = EMPTY;
+    }
+    else if (direction == LEFT)
+    {
+        l_shape.shape[1][0].status = EMPTY;
+        l_shape.shape[1][1].status = EMPTY;
+    }
+    else if (direction == RIGHT)
+    {
+        l_shape.shape[0][1].status = EMPTY;
+        l_shape.shape[0][2].status = EMPTY;
+    }
+    else
+    {
+        fprintf(stderr, "Unknown direction: %d\n", direction);
+        exit(1);
+    }
 
-    l_shape.direction = UP;
+    l_shape.direction = direction;
 
     l_shape.color = COLOR_RED;
 
@@ -157,16 +180,43 @@ void init_board()
     }
 }
 
+void rotate_piece(Piece input, Piece output)
+{
+    int y = input.y;
+    int x = input.x;
+
+    for (int i = 0; i < y; i++)
+    {
+        for (int j = 0; j < x; j++)
+        {
+            output.shape[j][y - 1 - i] = input.shape[i][j];
+        }
+    }
+}
+
 int main()
 {
     init_board();
 
-    Piece l_shape = init_l_shape();
+    Piece l_shape = init_l_shape(RIGHT);
     Piece plus_shape = init_plus_shape();
+
+    Piece rotated_l_shape = init_l_shape(DOWN);
 
     put_piece(l_shape, 0, 0);
     put_piece(plus_shape, 3, 0);
+    put_piece(rotated_l_shape, 0, 2);
     print_board();
+
+    rotate_piece(l_shape, rotated_l_shape);
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
+            printf("%d ", rotated_l_shape.shape[i][j].status);
+        }
+        printf("\n");
+    }
 
     return 0;
 }
