@@ -223,6 +223,34 @@ Piece init_plus_shape()
     return plus_shape;
 }
 
+Piece init_square_shape()
+{
+    Piece plus_shape;
+
+    plus_shape.x = 2;
+    plus_shape.y = 2;
+
+    plus_shape.shape = (Cell **)malloc(plus_shape.x * plus_shape.y * sizeof((Piece){}.shape[0]));
+    for (size_t i = 0; i < plus_shape.y; i++)
+    {
+        plus_shape.shape[i] = (Cell *)malloc(plus_shape.x * sizeof((Piece){}.shape[0][0]));
+    }
+
+    for (size_t i = 0; i < plus_shape.y; i++)
+    {
+        for (size_t j = 0; j < plus_shape.x; j++)
+        {
+            plus_shape.shape[i][j].status = FILL;
+        }
+    }
+
+    plus_shape.direction = UP;
+
+    plus_shape.color = COLOR_LIGHT_GREEN;
+
+    return plus_shape;
+}
+
 void print_board()
 {
 
@@ -344,6 +372,7 @@ int main()
     Piece plus_shape = init_plus_shape();
     Piece __shape = init___shape(RIGHT);
     Piece b_shape = init_b_shape(RIGHT);
+    Piece square_shape = init_square_shape();
 
     put_piece(l2_shape, 6, 3);
     put_piece(l3_shape, 0, 1);
@@ -352,6 +381,7 @@ int main()
     put_piece(plus_shape, 2, 2);
     put_piece(__shape, 5, 0);
     put_piece(b_shape, 0, 3);
+    put_piece(square_shape, 9, 3);
 
     print_board();
 
@@ -369,6 +399,8 @@ int main()
     print_piece(L_shape);
     printf("\n");
     print_piece(b_shape);
+    printf("\n");
+    print_piece(square_shape);
 
     return 0;
 }
