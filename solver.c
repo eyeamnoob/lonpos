@@ -245,6 +245,60 @@ Piece init_t_shape(int direction)
     return l_shape;
 }
 
+Piece init_rod_shape(int direction)
+{
+    Piece l_shape;
+
+    l_shape.x = (direction == UP || direction == DOWN) ? 2 : 4;
+    l_shape.y = (direction == UP || direction == DOWN) ? 4 : 2;
+
+    l_shape.shape = (Cell **)malloc(l_shape.x * l_shape.y * sizeof((Piece){}.shape[0]));
+    for (size_t i = 0; i < l_shape.y; i++)
+    {
+        l_shape.shape[i] = (Cell *)malloc(l_shape.x * sizeof((Piece){}.shape[0][0]));
+    }
+
+    for (size_t i = 0; i < l_shape.y; i++)
+    {
+        for (size_t j = 0; j < l_shape.x; j++)
+        {
+            l_shape.shape[i][j].status = FILL;
+        }
+    }
+
+    switch (direction)
+    {
+    case UP:
+        l_shape.shape[0][0].status = EMPTY;
+        l_shape.shape[1][0].status = EMPTY;
+        l_shape.shape[3][1].status = EMPTY;
+        break;
+    case DOWN:
+        l_shape.shape[0][0].status = EMPTY;
+        l_shape.shape[2][1].status = EMPTY;
+        l_shape.shape[3][1].status = EMPTY;
+        break;
+    case LEFT:
+        l_shape.shape[1][0].status = EMPTY;
+        l_shape.shape[1][1].status = EMPTY;
+        l_shape.shape[0][3].status = EMPTY;
+        break;
+    case RIGHT:
+        l_shape.shape[1][0].status = EMPTY;
+        l_shape.shape[0][2].status = EMPTY;
+        l_shape.shape[0][3].status = EMPTY;
+        break;
+    default:
+        break;
+    }
+
+    l_shape.direction = direction;
+
+    l_shape.color = COLOR_WHITE;
+
+    return l_shape;
+}
+
 Piece init_u_shape(int direction)
 {
     Piece l_shape;
@@ -475,6 +529,7 @@ int main()
     Piece square_shape = init_square_shape();
     Piece u_shape = init_u_shape(LEFT);
     Piece t_shape = init_t_shape(LEFT);
+    Piece rod_shape = init_rod_shape(RIGHT);
 
     put_piece(l2_shape, 6, 3);
     put_piece(l3_shape, 0, 1);
@@ -486,6 +541,7 @@ int main()
     put_piece(square_shape, 9, 3);
     put_piece(u_shape, 9, 0);
     put_piece(t_shape, 6, 1);
+    put_piece(rod_shape, 0, 0);
 
     print_board();
 
@@ -509,6 +565,8 @@ int main()
     print_piece(u_shape);
     printf("\n");
     print_piece(t_shape);
+    printf("\n");
+    print_piece(rod_shape);
 
     return 0;
 }
