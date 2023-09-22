@@ -64,28 +64,40 @@ Piece init_l_shape(int direction, unsigned int width, unsigned int height, char 
     {
         for (size_t i = 0; i < l_shape.y - 1; i++)
         {
-            l_shape.shape[i][0].status = EMPTY;
+            for (size_t j = 0; j < l_shape.x - 1; j++)
+            {
+                l_shape.shape[i][j].status = EMPTY;
+            }
         }
     }
     else if (direction == DOWN)
     {
         for (size_t i = 1; i < l_shape.y; i++)
         {
-            l_shape.shape[i][1].status = EMPTY;
+            for (size_t j = 1; j < l_shape.x; j++)
+            {
+                l_shape.shape[i][j].status = EMPTY;
+            }
         }
     }
     else if (direction == LEFT)
     {
-        for (size_t i = 0; i < l_shape.x - 1; i++)
+        for (size_t i = 1; i < l_shape.y; i++)
         {
-            l_shape.shape[1][i].status = EMPTY;
+            for (size_t j = 0; j < l_shape.x - 1; j++)
+            {
+                l_shape.shape[i][j].status = EMPTY;
+            }
         }
     }
     else if (direction == RIGHT)
     {
-        for (size_t i = 1; i < l_shape.x; i++)
+        for (size_t i = 0; i < l_shape.y - 1; i++)
         {
-            l_shape.shape[0][i].status = EMPTY;
+            for (size_t j = 1; j < l_shape.x; j++)
+            {
+                l_shape.shape[i][j].status = EMPTY;
+            }
         }
     }
     else
@@ -278,12 +290,14 @@ int main()
     Piece l2_shape = init_l_shape(RIGHT, 2, 2, COLOR_MELLOW_PINK);
     Piece l3_shape = init_l_shape(RIGHT, 2, 3, COLOR_PINK);
     Piece l4_shape = init_l_shape(UP, 2, 4, COLOR_YELLOW);
+    Piece L_shape = init_l_shape(LEFT, 3, 3, COLOR_ORANGE);
     Piece plus_shape = init_plus_shape();
     Piece __shape = init___shape(RIGHT);
 
     put_piece(l2_shape, 6, 3);
     put_piece(l3_shape, 0, 1);
     put_piece(l4_shape, 4, 1);
+    put_piece(L_shape, 2, 0);
     put_piece(plus_shape, 2, 2);
     put_piece(__shape, 5, 0);
 
@@ -299,6 +313,8 @@ int main()
     print_piece(l4_shape);
     printf("\n");
     print_piece(l2_shape);
+    printf("\n");
+    print_piece(L_shape);
 
     return 0;
 }
