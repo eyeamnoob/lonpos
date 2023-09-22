@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include "color.h"
 
-#define MAP_X_BOUND 11
-#define MAP_Y_BOUND 5
+#define BOARD_X_BOUND 11
+#define BOARD_Y_BOUND 5
 #define FULL_SYMBOL '@'
 #define EMPTY_SYMBOL ' '
 
@@ -15,7 +15,7 @@ typedef struct
     bool status;
 } Cell;
 
-static Cell board[MAP_Y_BOUND][MAP_X_BOUND] = {0};
+static Cell board[BOARD_Y_BOUND][BOARD_X_BOUND] = {0};
 
 enum CellStatus
 {
@@ -128,15 +128,15 @@ Piece init_plus_shape()
 void print_board()
 {
 
-    for (int y = 0; y < MAP_Y_BOUND; y++)
+    for (int y = 0; y < BOARD_Y_BOUND; y++)
     {
-        for (int i = 0; i < MAP_X_BOUND * 2 + 1; i++)
+        for (int i = 0; i < BOARD_X_BOUND * 2 + 1; i++)
         {
             printf("-");
         }
         printf("\n");
 
-        for (int x = 0; x < MAP_X_BOUND; x++)
+        for (int x = 0; x < BOARD_X_BOUND; x++)
         {
             printf("|"
                    "%s"
@@ -146,7 +146,35 @@ void print_board()
         printf("|\n");
     }
 
-    for (int i = 0; i < MAP_X_BOUND * 2 + 1; i++)
+    for (int i = 0; i < BOARD_X_BOUND * 2 + 1; i++)
+    {
+        printf("-");
+    }
+    printf("\n");
+}
+
+void print_piece(Piece piece)
+{
+
+    for (unsigned int y = 0; y < piece.y; y++)
+    {
+        for (unsigned int i = 0; i < piece.x * 2 + 1; i++)
+        {
+            printf("-");
+        }
+        printf("\n");
+
+        for (unsigned int x = 0; x < piece.x; x++)
+        {
+            printf("|"
+                   "%s"
+                   "%c" COLOR_RESET,
+                   piece.color, piece.shape[y][x].status == EMPTY ? ' ' : '@');
+        }
+        printf("|\n");
+    }
+
+    for (unsigned int i = 0; i < piece.x * 2 + 1; i++)
     {
         printf("-");
     }
@@ -170,9 +198,9 @@ void put_piece(Piece piece, int x, int y)
 
 void init_board()
 {
-    for (size_t i = 0; i < MAP_Y_BOUND; i++)
+    for (size_t i = 0; i < BOARD_Y_BOUND; i++)
     {
-        for (size_t j = 0; j < MAP_X_BOUND; j++)
+        for (size_t j = 0; j < BOARD_X_BOUND; j++)
         {
             board[i][j].status = EMPTY;
             board[i][j].color = COLOR_WHITE;
@@ -182,12 +210,12 @@ void init_board()
 
 void rotate_piece(Piece input, Piece output)
 {
-    int y = input.y;
-    int x = input.x;
+    unsigned int y = input.y;
+    unsigned int x = input.x;
 
-    for (int i = 0; i < y; i++)
+    for (unsigned int i = 0; i < y; i++)
     {
-        for (int j = 0; j < x; j++)
+        for (unsigned int j = 0; j < x; j++)
         {
             output.shape[j][y - 1 - i] = input.shape[i][j];
         }
@@ -208,15 +236,12 @@ int main()
     put_piece(rotated_l_shape, 0, 2);
     print_board();
 
-    rotate_piece(l_shape, rotated_l_shape);
-    for (int i = 0; i < 3; i++)
-    {
-        for (int j = 0; j < 2; j++)
-        {
-            printf("%d ", rotated_l_shape.shape[i][j].status);
-        }
-        printf("\n");
-    }
+    printf("\n");
+    print_piece(plus_shape);
+    printf("\n");
+    print_piece(l_shape);
+    printf("\n");
+    print_piece(rotated_l_shape);
 
     return 0;
 }
