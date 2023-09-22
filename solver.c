@@ -20,7 +20,7 @@ static Cell board[BOARD_Y_BOUND][BOARD_X_BOUND] = {0};
 enum CellStatus
 {
     EMPTY,
-    FULL
+    FILL
 };
 
 enum Direction
@@ -40,12 +40,12 @@ typedef struct
     char *color;
 } Piece;
 
-Piece init_l_shape(int direction)
+Piece init_l_shape(int direction, unsigned int width, unsigned int height, char *color)
 {
     Piece l_shape;
 
-    l_shape.x = (direction == UP || direction == DOWN) ? 2 : 3;
-    l_shape.y = (direction == UP || direction == DOWN) ? 3 : 2;
+    l_shape.x = (direction == UP || direction == DOWN) ? width : height;
+    l_shape.y = (direction == UP || direction == DOWN) ? height : width;
 
     l_shape.shape = (Cell **)malloc(l_shape.x * l_shape.y * sizeof((Piece){}.shape[0]));
     for (size_t i = 0; i < l_shape.y; i++)
@@ -57,28 +57,36 @@ Piece init_l_shape(int direction)
     {
         for (size_t j = 0; j < l_shape.x; j++)
         {
-            l_shape.shape[i][j].status = FULL;
+            l_shape.shape[i][j].status = FILL;
         }
     }
     if (direction == UP)
     {
-        l_shape.shape[0][0].status = EMPTY;
-        l_shape.shape[1][0].status = EMPTY;
+        for (size_t i = 0; i < l_shape.y - 1; i++)
+        {
+            l_shape.shape[i][0].status = EMPTY;
+        }
     }
     else if (direction == DOWN)
     {
-        l_shape.shape[1][1].status = EMPTY;
-        l_shape.shape[2][1].status = EMPTY;
+        for (size_t i = 1; i < l_shape.y; i++)
+        {
+            l_shape.shape[i][1].status = EMPTY;
+        }
     }
     else if (direction == LEFT)
     {
-        l_shape.shape[1][0].status = EMPTY;
-        l_shape.shape[1][1].status = EMPTY;
+        for (size_t i = 0; i < l_shape.x - 1; i++)
+        {
+            l_shape.shape[1][i].status = EMPTY;
+        }
     }
     else if (direction == RIGHT)
     {
-        l_shape.shape[0][1].status = EMPTY;
-        l_shape.shape[0][2].status = EMPTY;
+        for (size_t i = 1; i < l_shape.x; i++)
+        {
+            l_shape.shape[0][i].status = EMPTY;
+        }
     }
     else
     {
@@ -88,7 +96,35 @@ Piece init_l_shape(int direction)
 
     l_shape.direction = direction;
 
-    l_shape.color = COLOR_RED;
+    l_shape.color = color;
+
+    return l_shape;
+}
+
+Piece init___shape(int direction)
+{
+    Piece l_shape;
+
+    l_shape.x = (direction == UP || direction == DOWN) ? 1 : 4;
+    l_shape.y = (direction == UP || direction == DOWN) ? 4 : 1;
+
+    l_shape.shape = (Cell **)malloc(l_shape.x * l_shape.y * sizeof((Piece){}.shape[0]));
+    for (size_t i = 0; i < l_shape.y; i++)
+    {
+        l_shape.shape[i] = (Cell *)malloc(l_shape.x * sizeof((Piece){}.shape[0][0]));
+    }
+
+    for (size_t i = 0; i < l_shape.y; i++)
+    {
+        for (size_t j = 0; j < l_shape.x; j++)
+        {
+            l_shape.shape[i][j].status = FILL;
+        }
+    }
+
+    l_shape.direction = direction;
+
+    l_shape.color = COLOR_GREEN;
 
     return l_shape;
 }
@@ -110,7 +146,7 @@ Piece init_plus_shape()
     {
         for (size_t j = 0; j < plus_shape.x; j++)
         {
-            plus_shape.shape[i][j].status = FULL;
+            plus_shape.shape[i][j].status = FILL;
         }
     }
     plus_shape.shape[0][0].status = EMPTY;
@@ -190,8 +226,21 @@ void put_piece(Piece piece, int x, int y)
     {
         for (int j = x; j < x_bound; j++)
         {
-            board[i][j].status = piece.shape[i - y][j - x].status;
-            board[i][j].color = piece.color;
+            if (board[i][j].status == FILL && piece.shape[i - y][j - x].status == FILL)
+            {
+                fprintf(stderr, "Can't place piece on piece.");
+                exit(1);
+            }
+            else if (board[i][j].status == FILL && piece.shape[i - y][j - x].status == EMPTY)
+            {
+                continue;
+            }
+
+            else
+            {
+                board[i][j].status = piece.shape[i - y][j - x].status;
+                board[i][j].color = piece.color;
+            }
         }
     }
 }
@@ -226,22 +275,30 @@ int main()
 {
     init_board();
 
-    Piece l_shape = init_l_shape(RIGHT);
+    Piece l2_shape = init_l_shape(RIGHT, 2, 2, COLOR_MELLOW_PINK);
+    Piece l3_shape = init_l_shape(RIGHT, 2, 3, COLOR_PINK);
+    Piece l4_shape = init_l_shape(UP, 2, 4, COLOR_YELLOW);
     Piece plus_shape = init_plus_shape();
+    Piece __shape = init___shape(RIGHT);
 
-    Piece rotated_l_shape = init_l_shape(DOWN);
+    put_piece(l2_shape, 6, 3);
+    put_piece(l3_shape, 0, 1);
+    put_piece(l4_shape, 4, 1);
+    put_piece(plus_shape, 2, 2);
+    put_piece(__shape, 5, 0);
 
-    put_piece(l_shape, 0, 0);
-    put_piece(plus_shape, 3, 0);
-    put_piece(rotated_l_shape, 0, 2);
     print_board();
 
     printf("\n");
     print_piece(plus_shape);
     printf("\n");
-    print_piece(l_shape);
+    print_piece(l3_shape);
     printf("\n");
-    print_piece(rotated_l_shape);
+    print_piece(__shape);
+    printf("\n");
+    print_piece(l4_shape);
+    printf("\n");
+    print_piece(l2_shape);
 
     return 0;
 }
